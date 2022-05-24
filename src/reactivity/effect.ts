@@ -1,7 +1,8 @@
 class Reactiveffect {
   private _fn;
-  constructor(fn) {
+  constructor(fn, public scheduler?) {
     this._fn = fn
+    this.scheduler = scheduler
   }
   run() {
     activeEffect = this
@@ -32,11 +33,16 @@ export function trigger(target, key) {
   let deps = depsMap.get(key)
   // 把当前实例的所有需要触发的方法，全都执行一遍
   for (let item of deps) {
-    item.run()
+    if (item.scheduler) {
+      item.scheduler()
+    } else {
+      item.run()
+    }
   }
 }
-export function effect(fn) {
-  const _effect = new Reactiveffect(fn)
+export function effect(fn, options: any = {}) {
+  const { scheduler } = options
+  const _effect = new Reactiveffect(fn, scheduler)
   _effect.run()
   return _effect.run.bind(_effect)
 }

@@ -27,4 +27,54 @@ describe('effect', () => {
     expect(foo).toBe(12)
     expect(b).toBe('foo')
   })
+
+  it("scheduler", () => {
+    // 1.通过 effect 的第二个参数，给定的一个 scheduler 的fn
+    // 2.effect第一次执行的时候还会执行fn
+    // 3.当响应式对象 set update的时候，不会执行fn，而是会执行scheduler
+    // 4.如果当执行 runner 的时候，还会执行 fn
+    let run: any
+    let dummy;
+    const scheduler = jest.fn(() => {
+      run = runner
+    })
+    const obj = reactive({ foo: 1 })
+    const runner = effect(() => {
+      dummy = obj.foo
+    }, { scheduler })
+    expect(scheduler).not.toHaveBeenCalled()
+    expect(dummy).toBe(1)
+    obj.foo++
+    expect(scheduler).toHaveBeenCalledTimes(1)
+    // should not run yet
+    expect(dummy).toBe(1);
+    // manually run
+    run()
+    // should have run
+    expect(dummy).toBe(2);
+    // should be called on first trigger
+    // let dummy;
+    // let run: any;
+    // const scheduler = jest.fn(() => {
+    //   run = runner;
+    // });
+    // const obj = reactive({ foo: 1 });
+    // const runner = effect(
+    //   () => {
+    //     dummy = obj.foo;
+    //   },
+    //   { scheduler }
+    // );
+    // expect(scheduler).not.toHaveBeenCalled();
+    // expect(dummy).toBe(1);
+    // // should be called on first trigger
+    // obj.foo++;
+    // expect(scheduler).toHaveBeenCalledTimes(1);
+    // // // should not run yet
+    // expect(dummy).toBe(1);
+    // // // manually run
+    // run();
+    // // // should have run
+    // expect(dummy).toBe(2);
+  });
 })
