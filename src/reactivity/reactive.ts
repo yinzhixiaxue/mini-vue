@@ -1,20 +1,15 @@
 import { track, trigger } from './effect'
-export function reactive(raw) {
-  console.log(`raw => ${JSON.stringify(raw)}`)
+export function reactive(raw): any {
   return new Proxy(raw, {
-    get: function (target, key) {
-      console.log('gettarget => ', target)
-      console.log('getkey => ', key)
+    get(target, key) {
+      const res = Reflect.get(target, key)
       track(target, key)
-      return Reflect.get(target, key)
+      return res
     },
-    set: function (target, key, value) {
-      console.log('settarget => ', target)
-      console.log('setkey => ', key)
-      console.log('setvalue => ', value)
-      target[key] = value
+    set(target, key, value) {
+      const res = Reflect.set(target, key, value)
       trigger(target, key)
-      return Reflect.set(target, key, target[key])
+      return res
     }
   })
 }
