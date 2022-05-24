@@ -12,6 +12,19 @@ describe('effect', () => {
     expect(b).toBe(2)
     obj.foo++;
     expect(b).toBe(3)
+  })
 
+  it('runner', () => {
+    // 当调用 runner 的时候可以重新执行 effect.run
+    // runner 的返回值就是用户给的 fn 的返回值
+    let foo = 10;
+    const runner = effect(() => {
+      foo++;
+      return 'foo'
+    })
+    expect(foo).toBe(11)
+    const b = runner()
+    expect(foo).toBe(12)
+    expect(b).toBe('foo')
   })
 })
