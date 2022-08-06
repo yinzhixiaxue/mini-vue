@@ -6,7 +6,7 @@ class ReactiveEffect {
   }
   run() {
     activeEffect = this
-    this[_fn]()
+    return this[_fn]()
   }
 }
 
@@ -14,6 +14,11 @@ let activeEffect
 export function effect(fn) {
   let effect = new ReactiveEffect(fn)
   effect.run()
+  return effect.run.bind(effect)
+  // let runner = effect.run()
+  // runner()
+  // return effect.run.bind(effect)
+  // return effect.run()
 }
 
 // target -> key -> dep
