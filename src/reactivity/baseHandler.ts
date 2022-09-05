@@ -2,6 +2,13 @@ import { track, trigger } from "./effect"
 
 const createGetter = function (isReadonly = false) {
   return function get(target, key) {
+    console.log('target--------', target)
+    console.log('key--------', key)
+    if (key === '__v_isReactive') {
+      return !isReadonly
+    } else if (key === '__v_isReadonly') {
+      return isReadonly
+    }
     const res = Reflect.get(target, key)
     if (!isReadonly) {
       track(target, key)

@@ -10,3 +10,11 @@ export function reactive(raw) {
 export function readonly(raw) {
   return createReactiveObject(raw, readonlyHandlers)
 }
+
+export function isReactive(value) {
+  return !!value["__v_isReactive"]
+}
+
+export function isReadonly(value) {
+  return value["__v_isReadonly"]
+}
