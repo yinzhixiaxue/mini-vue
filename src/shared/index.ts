@@ -1,2 +1,2 @@
 export const extend = Object.assign
-console.log(234)
+console.log(2345)
